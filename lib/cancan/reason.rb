@@ -15,13 +15,13 @@ module CanCan
       # Override
       def can(action = nil, subject = nil, conditions = nil, reason_hash = {}, &block)
         reason = extract_reason(conditions, reason_hash)
-        rules << ::CanCan::Rule.new(true, action, subject, conditions, reason, block)
+        rules << ::CanCan::Rule.new(true, action, subject, conditions.presence, reason, block)
       end
 
       # Override
       def cannot(action = nil, subject = nil, conditions = nil, reason_hash = {}, &block)
         reason = extract_reason(conditions, reason_hash)
-        rules << ::CanCan::Rule.new(false, action, subject, conditions, reason, block)
+        rules << ::CanCan::Rule.new(false, action, subject, conditions.presence, reason, block)
       end
 
       # Override
