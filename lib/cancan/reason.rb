@@ -34,9 +34,10 @@ module CanCan
           end
         end.reject(&:nil?).first
         if match && (result = match.base_behavior)
+          reasons[action][subject] = nil
           result
         else
-          reasons[action][subject] = match.reason
+          reasons[action][subject] = match && match.reason
           false
         end
       end

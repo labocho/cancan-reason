@@ -43,6 +43,13 @@ describe CanCan::Reason do
         expect(ability.reason(:read, private_article)).to eq "Private article"
       end
     end
+
+    context 'Reject by no statement' do
+      it "shoud have reason defined in first cannot statement" do
+        expect(ability.can?(:delete, private_article)).to eq false
+        expect(ability.reason(:delete, private_article)).to be_nil
+      end
+    end
   end
 
   it 'should have a version number' do
