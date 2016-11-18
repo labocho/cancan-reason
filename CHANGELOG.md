@@ -1,3 +1,7 @@
+### 0.0.4
+
+- Use cancancan 1.15.0 to support Rails 5.
+
 ### 0.0.3
 
 - Support `can` / `cannot` invocation with block.
