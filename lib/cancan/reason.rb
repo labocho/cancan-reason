@@ -15,23 +15,26 @@ module CanCan
       # Override
       def can(action = nil, subject = nil, conditions = nil, reason_hash = {}, &block)
         reason = extract_reason(conditions, reason_hash)
-        rules << ::CanCan::Rule.new(true, action, subject, conditions.presence, reason, block)
+        conditions = nil if conditions && conditions.empty?
+        add_rule(::CanCan::Rule.new(true, action, subject, conditions, reason, block))
       end
 
       # Override
       def cannot(action = nil, subject = nil, conditions = nil, reason_hash = {}, &block)
         reason = extract_reason(conditions, reason_hash)
-        rules << ::CanCan::Rule.new(false, action, subject, conditions.presence, reason, block)
+        conditions = nil if conditions && conditions.empty?
+        add_rule(::CanCan::Rule.new(false, action, subject, conditions, reason, block))
       end
 
       # Override
       def can?(action, subject, *extra_args)
-        match = relevant_rules_for_match(action, subject).detect do |rule|
-          rule.matches_conditions?(action, subject, extra_args)
-        end
-        return false unless match
-        if match.base_behavior
-          true
+        match = extract_subjects(subject).lazy.map do |a_subject|
+          relevant_rules_for_match(action, a_subject).detect do |rule|
+            rule.matches_conditions?(action, a_subject, extra_args)
+          end
+        end.reject(&:nil?).first
+        if match && (result = match.base_behavior)
+          result
         else
           reasons[action][subject] = match.reason
           false
