@@ -1,3 +1,7 @@
+### 0.0.5
+
+- Fix error when `can` / `cannot` did not match.
+
 ### 0.0.4
 
 - Use cancancan 1.15.0 to support Rails 5.
