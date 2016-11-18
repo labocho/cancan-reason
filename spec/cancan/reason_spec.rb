@@ -32,20 +32,20 @@ describe CanCan::Reason do
 
     context 'Reject by last cannot statement' do
       it "shoud have reason defined in last cannot statement" do
-        ability.can?(:read, removed_article).should be_false
-        ability.reason(:read, removed_article).should == "Removed"
+        expect(ability.can?(:read, removed_article)).to eq false
+        expect(ability.reason(:read, removed_article)).to eq "Removed"
       end
     end
 
     context 'Reject by first cannot statement' do
       it "shoud have reason defined in first cannot statement" do
-        ability.can?(:read, private_article).should be_false
-        ability.reason(:read, private_article).should == "Private article"
+        expect(ability.can?(:read, private_article)).to eq false
+        expect(ability.reason(:read, private_article)).to eq "Private article"
       end
     end
   end
 
   it 'should have a version number' do
-    CanCan::Reason::VERSION.should_not be_nil
+    expect(CanCan::Reason::VERSION).not_to be_nil
   end
 end
