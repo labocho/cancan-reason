@@ -50,6 +50,23 @@ describe CanCan::Reason do
         expect(ability.reason(:delete, private_article)).to be_nil
       end
     end
+
+    context '#authorize!' do
+      before do
+        class I18n; end
+        String.any_instance.stub(:underscore) { |word| word.downcase.gsub(/\s+/, '_') }
+        String.any_instance.stub(:humanize) { |word| word.gsub(/[a-zA-Z](?=[A-Z])/, '\0 ').downcase }
+        String.any_instance.stub(:blank?) { |word| word == '' }
+        I18n.stub(:translate).and_return('')
+        I18n.stub(:t) { |sentence| sentence.to_s }
+      end
+      it 'should raise CanCan::AccessDenied with the reason as error message' do
+        expect { ability.authorize!(:read, private_article) }.to raise_error(CanCan::AccessDenied, 'Private article')
+      end
+      it 'should raise the custom reason if any' do
+        expect { ability.authorize!(:read, private_article, message: 'Another reason') }.to raise_error(CanCan::AccessDenied, 'Another reason')
+      end
+    end
   end
 
   it 'should have a version number' do
