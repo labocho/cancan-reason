@@ -28,11 +28,10 @@ module CanCan
 
       # Override
       def can?(action, subject, *extra_args)
-        match = extract_subjects(subject).lazy.map do |a_subject|
-          relevant_rules_for_match(action, a_subject).detect do |rule|
-            rule.matches_conditions?(action, a_subject, extra_args)
-          end
-        end.reject(&:nil?).first
+        match = relevant_rules_for_match(action, subject).detect do |rule|
+          rule.matches_conditions?(action, subject, extra_args)
+        end
+        match ? match.base_behavior : false
         if match && (result = match.base_behavior)
           reasons[action][subject] = nil
           result
@@ -40,6 +39,19 @@ module CanCan
           reasons[action][subject] = match && match.reason
           false
         end
+      end
+
+      # Override
+      def unauthorized_message(action, subject)
+        keys = unauthorized_message_keys(action, subject)
+        variables = {:action => action.to_s}
+        variables[:subject] = (subject.class == Class ? subject : subject.class).to_s.underscore.humanize.downcase
+        message = I18n.translate(nil, variables.merge(:scope => :unauthorized, :default => keys + [""]))
+        message.blank? ? reason(action, subject) : message
+      end
+
+      def add_rule(rule)
+        rules << rule
       end
 
       def extract_reason(conditions, reason_hash)
