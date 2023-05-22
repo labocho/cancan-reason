@@ -1,3 +1,7 @@
+### 0.0.7
+
+- Update dependencies.
+
 ### 0.0.5
 
 - Fix error when `can` / `cannot` did not match.
