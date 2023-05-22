@@ -16,14 +16,14 @@ module CanCan
       def can(action = nil, subject = nil, conditions = nil, reason_hash = {}, &block)
         reason = extract_reason(conditions, reason_hash)
         conditions = nil if conditions && conditions.empty?
-        add_rule(::CanCan::Rule.new(true, action, subject, conditions, reason, block))
+        add_rule(::CanCan::Rule.new(true, action, subject, conditions, reason, &block))
       end
 
       # Override
       def cannot(action = nil, subject = nil, conditions = nil, reason_hash = {}, &block)
         reason = extract_reason(conditions, reason_hash)
         conditions = nil if conditions && conditions.empty?
-        add_rule(::CanCan::Rule.new(false, action, subject, conditions, reason, block))
+        add_rule(::CanCan::Rule.new(false, action, subject, conditions, reason, &block))
       end
 
       # Override
@@ -50,8 +50,8 @@ module CanCan
     end
 
     module Rule
-      def initialize(base_behavior, action, subject, conditions, reason, block)
-        super(base_behavior, action, subject, conditions, block)
+      def initialize(base_behavior, action, subject, conditions, reason, &block)
+        super(base_behavior, action, subject, conditions, &block)
         @reason = reason
       end
 
